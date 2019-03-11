@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
+            app:startDestination="@id/myTasksFragment">
+
+    <fragment android:id="@+id/myTasksFragment"
+              android:name="com.mikeherasimov.doitapp.ui.mytasks.MyTasksFragment"
+              android:label="fragment_my_tasks"
+              tools:layout="@layout/fragment_my_tasks">
+        <action android:id="@+id/action_myTasksFragment_to_signInActivity"
+                app:destination="@id/signInActivity"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"
+        />
+    </fragment>
+    <activity android:id="@+id/signInActivity"
+              android:name="com.mikeherasimov.doitapp.ui.login.SignInActivity"
+              android:label="activity_sign_in"
+              tools:layout="@layout/activity_sign_in"/>
+
+</navigation>
