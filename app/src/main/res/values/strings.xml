@@ -11,4 +11,7 @@
 
     <string name="no_tasks_yet">No tasks yet</string>
 
+    <string name="error_no_email">No email</string>
+    <string name="error_no_password">No password</string>
+
 </resources>
