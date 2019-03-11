@@ -1,5 +1,6 @@
 package com.mikeherasimov.doitapp.ui.mytasks
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,13 +9,12 @@ import android.view.ViewGroup
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.NavHostFragment
 import com.mikeherasimov.doitapp.App
-import com.mikeherasimov.doitapp.R
 
 import com.mikeherasimov.doitapp.databinding.FragmentMyTasksBinding
 import com.mikeherasimov.doitapp.io.data.TaskRepository
 import com.mikeherasimov.doitapp.io.data.UserRepository
+import com.mikeherasimov.doitapp.ui.signin.SignInActivity
 import javax.inject.Inject
 
 class MyTasksFragment : Fragment() {
@@ -34,8 +34,8 @@ class MyTasksFragment : Fragment() {
         viewModel.isUserLoggedIn.addOnPropertyChangedCallback(object: Observable.OnPropertyChangedCallback() {
             override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
                 if (!(sender as ObservableBoolean).get()) {
-                    NavHostFragment.findNavController(this@MyTasksFragment)
-                        .navigate(R.id.action_myTasksFragment_to_signInActivity)
+                    val intent = Intent(activity, SignInActivity::class.java)
+                    activity!!.startActivityForResult(intent, 1)
                 }
             }
         })
