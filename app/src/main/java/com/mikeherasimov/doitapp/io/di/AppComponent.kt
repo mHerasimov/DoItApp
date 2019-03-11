@@ -1,7 +1,7 @@
-package com.mikeherasimov.doitapp.di
+package com.mikeherasimov.doitapp.io.di
 
-import com.mikeherasimov.doitapp.di.module.ContextModule
-import com.mikeherasimov.doitapp.di.module.RepositoryModule
+import com.mikeherasimov.doitapp.io.di.module.ContextModule
+import com.mikeherasimov.doitapp.io.di.module.RepositoryModule
 import dagger.Component
 import javax.inject.Singleton
 

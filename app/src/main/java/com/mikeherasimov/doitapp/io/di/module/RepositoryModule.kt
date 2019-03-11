@@ -1,15 +1,15 @@
-package com.mikeherasimov.doitapp.di.module
+package com.mikeherasimov.doitapp.io.di.module
 
 import android.content.Context
 import androidx.room.Room
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.mikeherasimov.doitapp.BuildConfig
-import com.mikeherasimov.doitapp.api.ApiService
-import com.mikeherasimov.doitapp.data.TaskRepository
-import com.mikeherasimov.doitapp.data.UserRepository
-import com.mikeherasimov.doitapp.db.AppDatabase
-import com.mikeherasimov.doitapp.db.TaskDao
-import com.mikeherasimov.doitapp.db.UserDao
+import com.mikeherasimov.doitapp.io.api.ApiService
+import com.mikeherasimov.doitapp.io.data.TaskRepository
+import com.mikeherasimov.doitapp.io.data.UserRepository
+import com.mikeherasimov.doitapp.io.db.AppDatabase
+import com.mikeherasimov.doitapp.io.db.TaskDao
+import com.mikeherasimov.doitapp.io.db.UserDao
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

@@ -1,4 +1,4 @@
-package com.mikeherasimov.doitapp.di.module
+package com.mikeherasimov.doitapp.io.di.module
 
 import android.content.Context
 import dagger.Module

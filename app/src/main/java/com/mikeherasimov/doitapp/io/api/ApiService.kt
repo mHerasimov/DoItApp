@@ -1,6 +1,6 @@
-package com.mikeherasimov.doitapp.api
+package com.mikeherasimov.doitapp.io.api
 
-import com.mikeherasimov.doitapp.db.Task
+import com.mikeherasimov.doitapp.io.db.Task
 import kotlinx.coroutines.Deferred
 import retrofit2.http.*
 

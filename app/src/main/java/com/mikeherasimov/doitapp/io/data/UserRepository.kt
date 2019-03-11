@@ -1,9 +1,9 @@
-package com.mikeherasimov.doitapp.data
+package com.mikeherasimov.doitapp.io.data
 
-import com.mikeherasimov.doitapp.api.ApiService
-import com.mikeherasimov.doitapp.db.TaskDao
-import com.mikeherasimov.doitapp.db.User
-import com.mikeherasimov.doitapp.db.UserDao
+import com.mikeherasimov.doitapp.io.api.ApiService
+import com.mikeherasimov.doitapp.io.db.TaskDao
+import com.mikeherasimov.doitapp.io.db.User
+import com.mikeherasimov.doitapp.io.db.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext

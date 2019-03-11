@@ -1,4 +1,4 @@
-package com.mikeherasimov.doitapp.db
+package com.mikeherasimov.doitapp.io.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
