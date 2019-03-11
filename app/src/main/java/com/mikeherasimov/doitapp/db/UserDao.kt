@@ -1,8 +1,10 @@
 package com.mikeherasimov.doitapp.db
 
 import androidx.lifecycle.LiveData
+import androidx.room.Dao
 import androidx.room.Query
 
+@Dao
 interface UserDao: BaseDao<User> {
 
     @Query("SELECT * FROM user LIMIT 1")
