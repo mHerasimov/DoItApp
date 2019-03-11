@@ -2,11 +2,13 @@
     <string name="app_name">DoItApp</string>
 
     <string name="sign_in">Sign in</string>
-    
+
     <string name="btn_login">Login</string>
     <string name="btn_register">Register</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
+
+    <string name="no_tasks_yet">No tasks yet</string>
 
 </resources>
