@@ -15,13 +15,17 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SERVER_URL", "\"http://testapi.doitserver.in.ua/api\""
+            buildConfigField "String", "SERVER_URL", "\"http://testapi.doitserver.in.ua/api/\""
         }
         release {
-            buildConfigField "String", "SERVER_URL", "\"http://testapi.doitserver.in.ua/api\""
+            buildConfigField "String", "SERVER_URL", "\"http://testapi.doitserver.in.ua/api/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    dataBinding {
+        enabled = true
     }
 }
 
@@ -59,4 +63,8 @@ dependencies {
     implementation "android.arch.navigation:navigation-fragment:$navigationVersion"
     implementation "android.arch.navigation:navigation-ui:$navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycleCompilerVersion"
 }

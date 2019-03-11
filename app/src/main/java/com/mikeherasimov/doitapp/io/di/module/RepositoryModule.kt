@@ -46,7 +46,7 @@ class RepositoryModule {
                 HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
             .addInterceptor { chain ->
                 userDao.getUser().observeForever {
-                    addToken(chain, it.token)
+                    addToken(chain, it?.token ?: "")
                 }
                 addToken(chain, "")
             }

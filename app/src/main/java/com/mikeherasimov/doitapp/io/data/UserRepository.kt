@@ -1,11 +1,11 @@
 package com.mikeherasimov.doitapp.io.data
 
+import androidx.lifecycle.LiveData
 import com.mikeherasimov.doitapp.io.api.ApiService
 import com.mikeherasimov.doitapp.io.db.TaskDao
 import com.mikeherasimov.doitapp.io.db.User
 import com.mikeherasimov.doitapp.io.db.UserDao
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 class UserRepository(
@@ -13,6 +13,8 @@ class UserRepository(
     private val userDao: UserDao,
     private val taskDao: TaskDao
 ) {
+
+    fun getUser(): LiveData<User?> = userDao.getUser()
 
     suspend fun login(email: String, password: String) {
         withContext(Dispatchers.IO) {
