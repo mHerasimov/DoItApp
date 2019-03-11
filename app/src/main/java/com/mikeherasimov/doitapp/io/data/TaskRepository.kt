@@ -13,7 +13,7 @@ class TaskRepository(
     private val taskDao: TaskDao
 ) {
 
-    fun getCachedTaks(): LiveData<List<Task>> = taskDao.getAllTasks()
+    fun getCachedTasks(): LiveData<List<Task>> = taskDao.getAllTasks()
 
     suspend fun getTasksFromApi(page: Int, sort: String): List<Task> {
         var tasks = emptyList<Task>()
