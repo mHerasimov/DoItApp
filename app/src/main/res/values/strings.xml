@@ -14,4 +14,16 @@
     <string name="error_no_email">No email</string>
     <string name="error_no_password">No password</string>
 
+    <string name="task_priority">Task priority</string>
+    <string name="task_deadline">Task deadline</string>
+    <string name="task_title">Title</string>
+    <string name="task_priority_high">High</string>
+    <string name="task_priority_medium">Medium</string>
+    <string name="task_priority_low">Low</string>
+
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="pick_date">Pick date</string>
+    <string name="pick_time">Pick time</string>
+
 </resources>
