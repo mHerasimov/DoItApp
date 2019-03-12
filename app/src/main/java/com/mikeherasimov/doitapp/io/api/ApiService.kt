@@ -1,43 +1,32 @@
 package com.mikeherasimov.doitapp.io.api
 
 import com.mikeherasimov.doitapp.io.db.Task
+import com.mikeherasimov.doitapp.io.db.User
 import kotlinx.coroutines.Deferred
 import retrofit2.http.*
 
 interface ApiService {
 
     @POST("users")
-    fun register(
-        @Field("email") email: String,
-        @Field("password") password: String
-    ): Deferred<String>
+    fun registerAsync(@Body user: User): Deferred<Map<String, String>>
 
+    @FormUrlEncoded
     @POST("auth")
-    fun login(
-        @Field("email") email: String,
-        @Field("password") password: String
-    ): Deferred<String>
+    fun loginAsync(@Body user: User): Deferred<Map<String, String>>
 
     @GET("tasks")
-    fun getTasks(@Query("page") page: Int, @Query("sort") sort: String): Deferred<List<Task>>
+    fun getTasksAsync(@Query("page") page: Int, @Query("sort") sort: String): Deferred<List<Task>>
 
+    @FormUrlEncoded
     @POST("tasks")
-    fun createTask(
-        @Field("title") title: String,
-        @Field("dueBy") dueBy: String,
-        @Field("priority") priority: String
-    ): Deferred<Task>
+    fun createTaskAsync(@Body task: Task): Deferred<Task>
 
     @GET("tasks/{task}")
-    fun getTask(@Path("task") taskId: Int): Deferred<Task>
+    fun getTaskAsync(@Path("task") taskId: Int): Deferred<Task>
 
+    @FormUrlEncoded
     @PUT("tasks/{task}")
-    fun updateTask(
-        @Path("task") taskId: Int,
-        @Field("title") title: String,
-        @Field("dueBy") dueBy: String,
-        @Field("priority") priority: String
-    ): Deferred<Task>
+    fun updateTaskAsync(@Path("task") taskId: Int, @Body task: Task): Deferred<Task>
 
     @DELETE("tasks/{task}")
     fun deleteTask(@Path("task") taskId: Int)

@@ -10,6 +10,9 @@ interface UserDao: BaseDao<User> {
     @Query("SELECT * FROM user LIMIT 1")
     fun getUser(): LiveData<User?>
 
+    @Query("SELECT * FROM user LIMIT 1")
+    fun getUserSync(): User?
+
     @Query("DELETE FROM user")
     fun deleteAll()
 

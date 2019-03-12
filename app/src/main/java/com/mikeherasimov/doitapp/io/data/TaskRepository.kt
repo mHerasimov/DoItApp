@@ -17,15 +17,16 @@ class TaskRepository(
     suspend fun getTasksFromApi(page: Int, sort: String): List<Task> {
         var tasks = emptyList<Task>()
         withContext(Dispatchers.IO) {
-            tasks = apiService.getTasks(page, sort).await()
+            tasks = apiService.getTasksAsync(page, sort).await()
         }
         return tasks
     }
 
     suspend fun createTask(title: String, dueBy: String, priority: String) {
         withContext(Dispatchers.IO) {
-            val task = apiService.createTask(title, dueBy, priority).await()
-            taskDao.insert(task)
+            val requestTask = Task(title = title, dueBy = dueBy, priority = priority)
+            val responseTask = apiService.createTaskAsync(requestTask).await()
+            taskDao.insert(responseTask)
         }
     }
 
@@ -34,15 +35,16 @@ class TaskRepository(
     suspend fun getTask(taskId: Int): Task {
         var task: Task? = null
         withContext(Dispatchers.IO) {
-            task = apiService.getTask(taskId).await()
+            task = apiService.getTaskAsync(taskId).await()
         }
         return task!!
     }
 
     suspend fun updateTask(taskId: Int, title: String, dueBy: String, priority: String) {
         withContext(Dispatchers.IO) {
-            val task = apiService.updateTask(taskId, title, dueBy, priority).await()
-            taskDao.update(task)
+            val requestTask = Task(taskId.toString(), title, dueBy, priority)
+            val responseTask = apiService.updateTaskAsync(taskId, requestTask).await()
+            taskDao.update(responseTask)
         }
     }
 

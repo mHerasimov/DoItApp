@@ -2,9 +2,7 @@ package com.mikeherasimov.doitapp.io.data
 
 import androidx.lifecycle.LiveData
 import com.mikeherasimov.doitapp.io.api.ApiService
-import com.mikeherasimov.doitapp.io.db.TaskDao
-import com.mikeherasimov.doitapp.io.db.User
-import com.mikeherasimov.doitapp.io.db.UserDao
+import com.mikeherasimov.doitapp.io.db.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,8 +16,9 @@ class UserRepository(
 
     suspend fun login(email: String, password: String) {
         withContext(Dispatchers.IO) {
-            val token = apiService.login(email, password).await()
-            userDao.insert(User(email, password, token))
+            val user = User(email, password)
+            val map = apiService.loginAsync(user).await()
+            userDao.insert(user.copy(token = map.getValue("token")))
         }
     }
 
@@ -32,8 +31,9 @@ class UserRepository(
 
     suspend fun register(email: String, password: String) {
         withContext(Dispatchers.IO) {
-            val token = apiService.register(email, password).await()
-            userDao.insert(User(email, password, token))
+            val user = User(email, password)
+            val map = apiService.registerAsync(user).await()
+            userDao.insert(user.copy(token = map.getValue("token")))
         }
     }
 
