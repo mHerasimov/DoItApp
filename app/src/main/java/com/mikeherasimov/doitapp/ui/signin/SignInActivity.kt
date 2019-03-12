@@ -5,25 +5,46 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.Observable
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModelProviders
+import com.mikeherasimov.doitapp.App
 import com.mikeherasimov.doitapp.R
 import com.mikeherasimov.doitapp.databinding.ActivitySignInBinding
+import com.mikeherasimov.doitapp.io.data.UserRepository
+import javax.inject.Inject
 
 class SignInActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var userRepository: UserRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.component.inject(this)
 
         val binding: ActivitySignInBinding = DataBindingUtil.setContentView(
             this, R.layout.activity_sign_in)
         val viewModel = setupViewModel()
         binding.viewModel = viewModel
         binding.loginClickListener = View.OnClickListener {
-            viewModel.validate()
+            if (viewModel.validate()) {
+                viewModel.login()
+            }
         }
         binding.registerClickListener = View.OnClickListener {
-            viewModel.validate()
+            if (viewModel.validate()) {
+                viewModel.register()
+            }
         }
+        viewModel.loginOrRegisterCompletedSuccessfully.addOnPropertyChangedCallback(
+            object: Observable.OnPropertyChangedCallback() {
+                override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                    if ((sender as ObservableBoolean).get()) {
+                        finish()
+                    }
+                }
+            })
     }
 
     override fun onBackPressed() {
@@ -34,7 +55,10 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel(): SignInViewModel {
-        return ViewModelProviders.of(this).get(SignInViewModel::class.java)
+        val factory = SignInViewModel.Factory(userRepository)
+        return ViewModelProviders
+            .of(this, factory)
+            .get(SignInViewModel::class.java)
     }
 
 }

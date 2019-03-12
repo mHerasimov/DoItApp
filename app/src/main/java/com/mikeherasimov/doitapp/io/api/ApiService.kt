@@ -10,21 +10,18 @@ interface ApiService {
     @POST("users")
     fun registerAsync(@Body user: User): Deferred<Map<String, String>>
 
-    @FormUrlEncoded
     @POST("auth")
     fun loginAsync(@Body user: User): Deferred<Map<String, String>>
 
     @GET("tasks")
     fun getTasksAsync(@Query("page") page: Int, @Query("sort") sort: String): Deferred<List<Task>>
 
-    @FormUrlEncoded
     @POST("tasks")
     fun createTaskAsync(@Body task: Task): Deferred<Task>
 
     @GET("tasks/{task}")
     fun getTaskAsync(@Path("task") taskId: Int): Deferred<Task>
 
-    @FormUrlEncoded
     @PUT("tasks/{task}")
     fun updateTaskAsync(@Path("task") taskId: Int, @Body task: Task): Deferred<Task>
 
