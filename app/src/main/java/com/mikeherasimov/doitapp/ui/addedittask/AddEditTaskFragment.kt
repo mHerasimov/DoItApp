@@ -6,16 +6,38 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import com.mikeherasimov.doitapp.R
+import com.mikeherasimov.doitapp.databinding.FragmentAddEditTaskBinding
+import com.mikeherasimov.doitapp.ui.addedittask.picker.DatePickerFragmentDialog
+import com.mikeherasimov.doitapp.ui.addedittask.picker.TimePickerFragmentDialog
 
-class AddEditTaskFragment : Fragment() {
+class AddEditTaskFragment : Fragment(),
+    DatePickerFragmentDialog.DatePickerListener, TimePickerFragmentDialog.TimePickerListener {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_edit_task, container, false)
+        val binding = FragmentAddEditTaskBinding.inflate(inflater, container, false)
+        binding.pickDateClickListener = View.OnClickListener {
+            val dialog = DatePickerFragmentDialog()
+            dialog.setTargetFragment(this, 1)
+            dialog.show(fragmentManager!!, "")
+        }
+        binding.pickTimeClickListener = View.OnClickListener {
+            val dialog = TimePickerFragmentDialog()
+            dialog.setTargetFragment(this, 1)
+            dialog.show(fragmentManager!!, "")
+        }
+
+        return binding.root
+    }
+
+    override fun onDatePicked(year: Int, month: Int, day: Int) {
+
+    }
+
+    override fun onTimePicked(hourOfDay: Int, minute: Int) {
+
     }
 
 }

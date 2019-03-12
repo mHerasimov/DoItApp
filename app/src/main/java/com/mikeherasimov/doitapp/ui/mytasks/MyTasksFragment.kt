@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.NavHostFragment
 import com.mikeherasimov.doitapp.App
+import com.mikeherasimov.doitapp.R
 
 import com.mikeherasimov.doitapp.databinding.FragmentMyTasksBinding
 import com.mikeherasimov.doitapp.io.data.TaskRepository
@@ -41,6 +43,9 @@ class MyTasksFragment : Fragment() {
         })
 
         val binding = FragmentMyTasksBinding.inflate(inflater, container, false)
+        binding.fabClickListener = View.OnClickListener {
+            NavHostFragment.findNavController(this).navigate(R.id.action_myTasksFragment_to_addEditTaskFragment)
+        }
         return binding.root
     }
 
