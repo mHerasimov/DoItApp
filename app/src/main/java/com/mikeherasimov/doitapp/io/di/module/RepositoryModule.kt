@@ -76,7 +76,7 @@ class RepositoryModule {
 
     private fun addToken(chain: Interceptor.Chain, token: String): Response {
         val newRequest = chain.request().newBuilder()
-            .addHeader("bearerAuth", token)
+            .addHeader("Authorization", "bearerAuth $token")
             .build()
         return chain.proceed(newRequest)
     }
