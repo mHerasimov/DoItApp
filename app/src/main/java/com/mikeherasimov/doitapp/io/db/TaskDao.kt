@@ -2,6 +2,8 @@ package com.mikeherasimov.doitapp.io.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
@@ -18,5 +20,8 @@ interface TaskDao: BaseDao<Task> {
 
     @Query("DELETE FROM task WHERE id = :taskId")
     fun deleteTask(taskId: Int)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(tasks: List<Task>)
 
 }

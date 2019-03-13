@@ -1,27 +1,86 @@
 package com.mikeherasimov.doitapp.ui.mytasks
 
-import androidx.databinding.ObservableBoolean
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.mikeherasimov.doitapp.io.data.TaskRepository
 import com.mikeherasimov.doitapp.io.data.UserRepository
+import com.mikeherasimov.doitapp.io.db.Task
 import com.mikeherasimov.doitapp.ui.base.ScopedViewModel
+import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class MyTasksViewModel(
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val taskRepository: TaskRepository
 ) : ScopedViewModel() {
 
-    val isUserLoggedIn = ObservableBoolean(true)
+    private val _isUserLoggedIn = MutableLiveData<Boolean>(true)
+    val isUserLoggedIn: LiveData<Boolean>
+        get() = _isUserLoggedIn
+    private val _networkError = MutableLiveData<Boolean>(false)
+    val networkError: LiveData<Boolean>
+        get() = _networkError
+
+    private var lastRequestedPage = 1
+    private var isRequestInProgress = false
 
     init {
         userRepository.getUser().observeForever {
-            isUserLoggedIn.set(it != null)
+            _isUserLoggedIn.value = it != null
         }
     }
 
-    class Factory(private val userRepository: UserRepository,
-                  private val taskRepository: TaskRepository
+    private fun search(sortingOrder: String): LiveData<List<Task>> {
+        lastRequestedPage = 1
+        requestAndSaveData(sortingOrder)
+        val tasks = taskRepository.getCachedTasks()
+        return Transformations.map(tasks) { list ->
+            sortTasks(list, sortingOrder)
+        }
+    }
+
+    fun requestMore(sortingOrder: String) {
+        requestAndSaveData(sortingOrder)
+    }
+
+    private fun requestAndSaveData(sortingOrder: String) {
+        if (isRequestInProgress) {
+            return
+        }
+
+        isRequestInProgress = true
+        try {
+            launch {
+                val tasks = taskRepository.getTasksFromApi(lastRequestedPage, sortingOrder)
+                taskRepository.saveTasksToCache(tasks)
+                lastRequestedPage++
+            }
+        } catch (e: Exception) {
+            isRequestInProgress = false
+            _networkError.value = true
+        } finally {
+            isRequestInProgress = false
+            _networkError.value = false
+        }
+    }
+
+    private fun sortTasks(list: List<Task>, sortingOrder: String): List<Task> {
+        var result: List<Task>
+        val propertyToBeSorted = sortingOrder.split(" ")[0]
+        val order = sortingOrder.split(" ")[1]
+        result = when (propertyToBeSorted) {
+            "title" -> list.sortedBy { it.title }
+            "priority" -> list.sortedBy { it.priority }
+            else -> list.sortedBy { it.dueBy.toLong() }
+        }
+        if (order.equals("desc", true)) {
+            result = result.reversed()
+        }
+        return result
+    }
+
+    class Factory(
+        private val userRepository: UserRepository,
+        private val taskRepository: TaskRepository
     ): ViewModelProvider.Factory {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {

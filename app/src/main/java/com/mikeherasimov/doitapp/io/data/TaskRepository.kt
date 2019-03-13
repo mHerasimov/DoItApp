@@ -1,6 +1,5 @@
 package com.mikeherasimov.doitapp.io.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.mikeherasimov.doitapp.io.api.ApiService
 import com.mikeherasimov.doitapp.io.db.Task
@@ -53,6 +52,12 @@ class TaskRepository(
         withContext(Dispatchers.IO) {
             apiService.deleteTask(taskId)
             taskDao.deleteTask(taskId)
+        }
+    }
+
+    suspend fun saveTasksToCache(tasks: List<Task>) {
+        withContext(Dispatchers.IO) {
+            taskDao.insertAll(tasks)
         }
     }
 
