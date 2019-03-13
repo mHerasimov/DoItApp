@@ -29,7 +29,7 @@ class MyTasksViewModel(
         }
     }
 
-    private fun search(sortingOrder: String): LiveData<List<Task>> {
+    fun search(sortingOrder: String): LiveData<List<Task>> {
         lastRequestedPage = 1
         requestAndSaveData(sortingOrder)
         val tasks = taskRepository.getCachedTasks()
