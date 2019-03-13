@@ -21,17 +21,17 @@ fun bindError(textInputLayout: TextInputLayout, error: ObservableField<Int?>) {
 }
 
 @BindingAdapter("date")
-fun bindDate(editText: EditText, date: ObservableLong) {
+fun bindDate(editText: EditText, timestamp: ObservableLong) {
     val calendar = Calendar.getInstance()
-    calendar.timeInMillis = date.get()
+    calendar.timeInMillis = timestamp.get()
     val format = SimpleDateFormat.getDateInstance()
     editText.setText(format.format(calendar.time))
 }
 
 @BindingAdapter("time")
-fun bindTime(editText: EditText, time: ObservableLong) {
+fun bindTime(editText: EditText, timestamp: ObservableLong) {
     val calendar = Calendar.getInstance()
-    calendar.timeInMillis = time.get()
+    calendar.timeInMillis = timestamp.get()
     val format = SimpleDateFormat.getTimeInstance()
     editText.setText(format.format(calendar.time))
 }

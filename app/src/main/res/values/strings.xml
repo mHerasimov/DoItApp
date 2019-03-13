@@ -13,6 +13,7 @@
 
     <string name="error_no_email">No email</string>
     <string name="error_no_password">No password</string>
+    <string name="error_no_title">No title</string>
 
     <string name="task_priority">Task priority</string>
     <string name="task_deadline">Task deadline</string>

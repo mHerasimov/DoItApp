@@ -17,7 +17,7 @@ interface ApiService {
     fun getTasksAsync(@Query("page") page: Int, @Query("sort") sort: String): Deferred<List<Task>>
 
     @POST("tasks")
-    fun createTaskAsync(@Body task: Task): Deferred<Task>
+    fun createTaskAsync(@Body task: Task): Deferred<Map<String, Task>>
 
     @GET("tasks/{task}")
     fun getTaskAsync(@Path("task") taskId: Int): Deferred<Task>

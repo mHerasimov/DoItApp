@@ -1,5 +1,6 @@
 package com.mikeherasimov.doitapp.io.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.mikeherasimov.doitapp.io.api.ApiService
 import com.mikeherasimov.doitapp.io.db.Task
@@ -25,7 +26,7 @@ class TaskRepository(
     suspend fun createTask(title: String, dueBy: String, priority: String) {
         withContext(Dispatchers.IO) {
             val requestTask = Task(title = title, dueBy = dueBy, priority = priority)
-            val responseTask = apiService.createTaskAsync(requestTask).await()
+            val responseTask = apiService.createTaskAsync(requestTask).await().getValue("task")
             taskDao.insert(responseTask)
         }
     }
