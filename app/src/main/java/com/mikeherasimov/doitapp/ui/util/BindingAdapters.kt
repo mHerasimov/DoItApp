@@ -1,8 +1,12 @@
 package com.mikeherasimov.doitapp.ui.util
 
+import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableLong
 import com.google.android.material.textfield.TextInputLayout
+import java.text.SimpleDateFormat
+import java.util.*
 
 @BindingAdapter("error")
 fun bindError(textInputLayout: TextInputLayout, error: ObservableField<Int?>) {
@@ -14,4 +18,20 @@ fun bindError(textInputLayout: TextInputLayout, error: ObservableField<Int?>) {
         textInputLayout.isErrorEnabled = false
         textInputLayout.error = null
     }
+}
+
+@BindingAdapter("date")
+fun bindDate(editText: EditText, date: ObservableLong) {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = date.get()
+    val format = SimpleDateFormat.getDateInstance()
+    editText.setText(format.format(calendar.time))
+}
+
+@BindingAdapter("time")
+fun bindTime(editText: EditText, time: ObservableLong) {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = time.get()
+    val format = SimpleDateFormat.getTimeInstance()
+    editText.setText(format.format(calendar.time))
 }

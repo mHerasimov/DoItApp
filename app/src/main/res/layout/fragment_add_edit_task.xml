@@ -4,6 +4,7 @@
     <data>
         <variable name="pickDateClickListener" type="android.view.View.OnClickListener"/>
         <variable name="pickTimeClickListener" type="android.view.View.OnClickListener"/>
+        <variable name="viewModel" type="com.mikeherasimov.doitapp.ui.addedittask.AddEditTaskViewModel"/>
     </data>
 
     <FrameLayout
@@ -29,7 +30,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="480dp">
 
-
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -39,17 +39,21 @@
                         android:layout_marginEnd="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:id="@+id/tilTitle"
-                        android:layout_marginTop="16dp">
+                        android:layout_marginTop="16dp"
+                        app:error="@{viewModel.noTitleError}">
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="3"
+                            android:text="@={viewModel.title}"
                             android:hint="@string/task_title"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
 
 
                 <RadioGroup
+                        android:checkedButton="@id/rbHighPriority"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -61,7 +65,7 @@
                         android:id="@+id/rgPriority">
 
                     <RadioButton
-                            android:checked="true"
+                            android:id="@+id/rbHighPriority"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -120,7 +124,9 @@
                             android:cursorVisible="false"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
-                            android:hint="@string/date"/>
+                            android:hint="@string/date"
+                            app:date="@{viewModel.dateTimestamp}"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -142,7 +148,9 @@
                             android:cursorVisible="false"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
-                            android:hint="@string/time"/>
+                            android:hint="@string/time"
+                            app:time="@{viewModel.timeTimestamp}"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
