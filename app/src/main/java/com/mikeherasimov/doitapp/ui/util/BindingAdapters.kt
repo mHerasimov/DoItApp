@@ -1,6 +1,7 @@
 package com.mikeherasimov.doitapp.ui.util
 
 import android.widget.EditText
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableLong
@@ -34,4 +35,12 @@ fun bindTime(editText: EditText, timestamp: ObservableLong) {
     calendar.timeInMillis = timestamp.get()
     val format = SimpleDateFormat.getTimeInstance()
     editText.setText(format.format(calendar.time))
+}
+
+@BindingAdapter("dateAndTime")
+fun bindDateAndTime(textView: TextView, timestamp: String) {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timestamp.toLong()
+    val format = SimpleDateFormat.getDateTimeInstance()
+    textView.text = format.format(calendar.time)
 }
