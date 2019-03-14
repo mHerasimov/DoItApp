@@ -1,14 +1,21 @@
 package com.mikeherasimov.doitapp.ui.mytasks
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.mikeherasimov.doitapp.databinding.ItemTaskBinding
 import com.mikeherasimov.doitapp.io.db.Task
 
-class MyTasksAdapter: ListAdapter<Task, MyTasksAdapter.ViewHolder>(DiffCallback()) {
+class MyTasksAdapter(
+    private val editClickListener: (itemPos: Int) -> Unit = { },
+    private val deleteClickListener: (itemPos: Int) -> Unit = { }
+): ListAdapter<Task, MyTasksAdapter.ViewHolder>(DiffCallback()) {
+
+    private val viewBinderHelper = ViewBinderHelper().apply { setOpenOnlyOne(true) }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemTaskBinding.inflate(
@@ -17,8 +24,9 @@ class MyTasksAdapter: ListAdapter<Task, MyTasksAdapter.ViewHolder>(DiffCallback(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val task = getItem(position)
+        viewBinderHelper.bind(holder.getSwipeRevealLayout(), task.id)
         holder.apply {
-            bind(task)
+            bind(task, editClickListener, deleteClickListener)
             itemView.tag = task
         }
     }
@@ -27,10 +35,22 @@ class MyTasksAdapter: ListAdapter<Task, MyTasksAdapter.ViewHolder>(DiffCallback(
         private val binding: ItemTaskBinding
     ): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(task: Task) {
+        fun bind(
+            task: Task,
+            editClickListener: (itemPos: Int) -> Unit,
+            deleteClickListener: (itemPos: Int) -> Unit
+        ) {
             binding.task = task
+            binding.editClickListener = View.OnClickListener {
+                editClickListener(adapterPosition)
+            }
+            binding.deleteClickListener = View.OnClickListener {
+                deleteClickListener(adapterPosition)
+            }
             binding.executePendingBindings()
         }
+
+        fun getSwipeRevealLayout() = binding.swipeRevealLayout
 
     }
 

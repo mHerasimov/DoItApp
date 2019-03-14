@@ -1,6 +1,5 @@
 package com.mikeherasimov.doitapp.ui.addedittask
 
-import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableLong
@@ -75,7 +74,6 @@ class AddEditTaskViewModel(
 
     fun createTask() {
         launch {
-            Log.d("AddEditTaskViewModel", deadlineTimestamp.get().toString())
             taskRepository.createTask(
                 title.get()!!, deadlineTimestamp.get().toString(), priority.get()!!)
             onTaskSuccessfullyUpdatedOrCreated.set(true)
