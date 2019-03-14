@@ -7,11 +7,13 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.mikeherasimov.doitapp.App
 import com.mikeherasimov.doitapp.R
 import com.mikeherasimov.doitapp.databinding.ActivitySignInBinding
 import com.mikeherasimov.doitapp.io.data.UserRepository
+import com.mikeherasimov.doitapp.ui.util.showNoInternetToast
 import javax.inject.Inject
 
 class SignInActivity : AppCompatActivity() {
@@ -37,14 +39,16 @@ class SignInActivity : AppCompatActivity() {
                 viewModel.register()
             }
         }
-        viewModel.loginOrRegisterCompletedSuccessfully.addOnPropertyChangedCallback(
-            object: Observable.OnPropertyChangedCallback() {
-                override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                    if ((sender as ObservableBoolean).get()) {
-                        finish()
-                    }
-                }
-            })
+        viewModel.loginOrRegisterCompletedSuccessfully.observe(this, Observer {
+            if (it) {
+                finish()
+            }
+        })
+        viewModel.networkError.observe(this, Observer {
+            if (it) {
+                showNoInternetToast(this)
+            }
+        })
     }
 
     override fun onBackPressed() {

@@ -72,6 +72,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycleCompilerVersion"
 
-    // 3-d party library to speed up implementation of swipe layout
+    // 3-d party libraries
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+    implementation 'com.valdesekamdem.library:md-toast:0.9.0'
 }

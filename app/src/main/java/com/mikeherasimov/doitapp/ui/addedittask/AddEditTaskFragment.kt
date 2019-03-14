@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.databinding.Observable
-import androidx.databinding.ObservableBoolean
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import com.mikeherasimov.doitapp.App
@@ -19,6 +18,7 @@ import com.mikeherasimov.doitapp.databinding.FragmentAddEditTaskBinding
 import com.mikeherasimov.doitapp.io.data.TaskRepository
 import com.mikeherasimov.doitapp.ui.addedittask.picker.DatePickerFragmentDialog
 import com.mikeherasimov.doitapp.ui.addedittask.picker.TimePickerFragmentDialog
+import com.mikeherasimov.doitapp.ui.util.showNoInternetToast
 import javax.inject.Inject
 
 class AddEditTaskFragment : Fragment(),
@@ -61,14 +61,16 @@ class AddEditTaskFragment : Fragment(),
             val checkedRadioButton = radioGroup.findViewById(i) as RadioButton
             viewModel.priority.set(checkedRadioButton.text.toString())
         }
-        viewModel.onTaskSuccessfullyUpdatedOrCreated.addOnPropertyChangedCallback(
-            object: Observable.OnPropertyChangedCallback() {
-                override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                    if ((sender as ObservableBoolean).get()) {
-                        NavHostFragment.findNavController(this@AddEditTaskFragment).popBackStack()
-                    }
-                }
-            })
+        viewModel.onTaskSuccessfullyUpdatedOrCreated.observe(this, Observer {
+            if (it) {
+                NavHostFragment.findNavController(this@AddEditTaskFragment).popBackStack()
+            }
+        })
+        viewModel.networkError.observe(this, Observer {
+            if (it) {
+                showNoInternetToast(context!!)
+            }
+        })
         updateUi(binding.rgPriority)
         return binding.root
     }

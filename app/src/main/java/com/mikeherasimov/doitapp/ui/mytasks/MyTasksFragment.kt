@@ -17,6 +17,7 @@ import com.mikeherasimov.doitapp.databinding.FragmentMyTasksBinding
 import com.mikeherasimov.doitapp.io.data.TaskRepository
 import com.mikeherasimov.doitapp.io.data.UserRepository
 import com.mikeherasimov.doitapp.ui.signin.SignInActivity
+import com.mikeherasimov.doitapp.ui.util.showNoInternetToast
 import javax.inject.Inject
 
 class MyTasksFragment : Fragment(), SortTasksDialog.SortingOrderListener {
@@ -109,6 +110,11 @@ class MyTasksFragment : Fragment(), SortTasksDialog.SortingOrderListener {
         // TODO observe network error here
         viewModel.search("title asc").observe(this, Observer {
             adapter.submitList(it)
+        })
+        viewModel.networkError.observe(this, Observer {
+            if (it) {
+                showNoInternetToast(context!!)
+            }
         })
     }
 

@@ -1,8 +1,9 @@
 package com.mikeherasimov.doitapp.ui.addedittask
 
-import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableLong
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mikeherasimov.doitapp.R
@@ -23,7 +24,10 @@ class AddEditTaskViewModel(
     val deadlineTimestamp = ObservableLong()
 
     val noTitleError = ObservableField<Int?>()
-    val onTaskSuccessfullyUpdatedOrCreated = ObservableBoolean(false)
+
+    private val _onTaskSuccessfullyUpdatedOrCreated = MutableLiveData<Boolean>()
+    val onTaskSuccessfullyUpdatedOrCreated: LiveData<Boolean>
+        get() = _onTaskSuccessfullyUpdatedOrCreated
 
     init {
         val calendar = Calendar.getInstance().apply {
@@ -66,17 +70,29 @@ class AddEditTaskViewModel(
 
     fun updateTask() {
         launch {
-            taskRepository.updateTask(
-                taskId, title.get()!!, deadlineTimestamp.get().toString(), priority.get()!!)
-            onTaskSuccessfullyUpdatedOrCreated.set(true)
+            try {
+                taskRepository.updateTask(
+                    taskId, title.get()!!, deadlineTimestamp.get().toString(), priority.get()!!)
+                _onTaskSuccessfullyUpdatedOrCreated.value = true
+            } catch (e: java.net.UnknownHostException) {
+                _networkError.value = true
+            } finally {
+                _networkError.value = false
+            }
         }
     }
 
     fun createTask() {
         launch {
-            taskRepository.createTask(
-                title.get()!!, deadlineTimestamp.get().toString(), priority.get()!!)
-            onTaskSuccessfullyUpdatedOrCreated.set(true)
+            try {
+                taskRepository.createTask(
+                    title.get()!!, deadlineTimestamp.get().toString(), priority.get()!!)
+                _onTaskSuccessfullyUpdatedOrCreated.value = true
+            } catch (e: java.net.UnknownHostException) {
+                _networkError.value = true
+            } finally {
+                _networkError.value = false
+            }
         }
     }
 

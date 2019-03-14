@@ -1,13 +1,15 @@
 package com.mikeherasimov.doitapp.ui.signin
 
-import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mikeherasimov.doitapp.R
 import com.mikeherasimov.doitapp.io.data.UserRepository
 import com.mikeherasimov.doitapp.ui.base.ScopedViewModel
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class SignInViewModel(
     private val userRepository: UserRepository
@@ -20,7 +22,9 @@ class SignInViewModel(
     val noPasswordError = ObservableField<Int?>()
 //    val wrongCredentialsError = ObservableField<Int?>()
 
-    val loginOrRegisterCompletedSuccessfully = ObservableBoolean(false)
+    private val _loginOrRegisterCompletedSuccessfully = MutableLiveData<Boolean>()
+    val loginOrRegisterCompletedSuccessfully: LiveData<Boolean>
+        get() = _loginOrRegisterCompletedSuccessfully
 
     fun validate(): Boolean {
         if (email.get().isNullOrEmpty()) {
@@ -40,15 +44,31 @@ class SignInViewModel(
 
     fun login() {
         launch {
-            userRepository.login(email.get()!!, password.get()!!)
-            loginOrRegisterCompletedSuccessfully.set(true)
+            try {
+                userRepository.login(email.get()!!, password.get()!!)
+                _loginOrRegisterCompletedSuccessfully.value = true
+            } catch (e: IOException) {
+                _networkError.value = true
+            } catch (e: retrofit2.HttpException) {
+                _networkError.value = true
+            } finally {
+                _networkError.value = false
+            }
         }
     }
 
     fun register() {
         launch {
-            userRepository.register(email.get()!!, password.get()!!)
-            loginOrRegisterCompletedSuccessfully.set(true)
+            try {
+                userRepository.register(email.get()!!, password.get()!!)
+                _loginOrRegisterCompletedSuccessfully.value = true
+            } catch (e: IOException) {
+                _networkError.value = true
+            } catch (e: retrofit2.HttpException) {
+                _networkError.value = true
+            } finally {
+                _networkError.value = false
+            }
         }
     }
 

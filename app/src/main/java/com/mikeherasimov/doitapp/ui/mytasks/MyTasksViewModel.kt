@@ -16,9 +16,6 @@ class MyTasksViewModel(
     private val _isUserLoggedIn = MutableLiveData<Boolean>()
     val isUserLoggedIn: LiveData<Boolean>
         get() = _isUserLoggedIn
-    private val _networkError = MutableLiveData<Boolean>(false)
-    val networkError: LiveData<Boolean>
-        get() = _networkError
 
     private var lastRequestedPage = 1
     private var isRequestInProgress = false
@@ -41,10 +38,14 @@ class MyTasksViewModel(
     }
 
     fun deleteTask(taskId: String) {
-        try {
-            launch { taskRepository.deleteTask(taskId.toInt()) }
-        } catch (e: Exception) {
-            _networkError.value = true
+        launch {
+            try {
+                taskRepository.deleteTask(taskId.toInt())
+            } catch (e: java.net.UnknownHostException) {
+                _networkError.value = true
+            } finally {
+                _networkError.value = false
+            }
         }
     }
 
@@ -58,8 +59,8 @@ class MyTasksViewModel(
         }
 
         isRequestInProgress = true
-        try {
-            launch {
+        launch {
+            try {
                 if (userRepository.getUserSync() == null) {
                     _isUserLoggedIn.value = false
                     return@launch
@@ -69,13 +70,13 @@ class MyTasksViewModel(
                 val tasksPage = taskRepository.getTasksFromApi(lastRequestedPage, sortingOrder)
                 taskRepository.saveTasksToCache(tasksPage.tasks)
                 lastRequestedPage++
+            } catch (e: java.net.UnknownHostException) {
+                isRequestInProgress = false
+                _networkError.value = true
+            } finally {
+                isRequestInProgress = false
+                _networkError.value = false
             }
-        } catch (e: retrofit2.HttpException) {
-            isRequestInProgress = false
-            _networkError.value = true
-        } finally {
-            isRequestInProgress = false
-            _networkError.value = false
         }
     }
 
