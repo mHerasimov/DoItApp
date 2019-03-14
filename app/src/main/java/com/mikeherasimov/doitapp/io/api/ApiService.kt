@@ -14,16 +14,16 @@ interface ApiService {
     fun loginAsync(@Body user: User): Deferred<Map<String, String>>
 
     @GET("tasks")
-    fun getTasksAsync(@Query("page") page: Int, @Query("sort") sort: String): Deferred<List<Task>>
+    fun getTasksAsync(@Query("page") page: Int, @Query("sort") sort: String): Deferred<TasksPage>
 
     @POST("tasks")
     fun createTaskAsync(@Body task: Task): Deferred<Map<String, Task>>
 
     @GET("tasks/{task}")
-    fun getTaskAsync(@Path("task") taskId: Int): Deferred<Task>
+    fun getTaskAsync(@Path("task") taskId: Int): Deferred<Map<String, Task>>
 
     @PUT("tasks/{task}")
-    fun updateTaskAsync(@Path("task") taskId: Int, @Body task: Task): Deferred<Task>
+    fun updateTaskAsync(@Path("task") taskId: Int, @Body task: Task): Deferred<Map<String, Task>>
 
     @DELETE("tasks/{task}")
     fun deleteTask(@Path("task") taskId: Int)
