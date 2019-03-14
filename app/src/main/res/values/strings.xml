@@ -28,6 +28,7 @@
     <string name="pick_time">Pick time</string>
 
     <string name="dialog_title_sorting_order">Sorting order</string>
+    <string name="dialog_btn_sort">Sort</string>
     <string name="sort_by">Sort by</string>
     <string name="order">Order</string>
 
