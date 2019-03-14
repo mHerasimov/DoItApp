@@ -14,6 +14,14 @@ class UserRepository(
 
     fun getUser(): LiveData<User?> = userDao.getUser()
 
+    suspend fun getUserSync(): User? {
+        var user: User? = null
+        withContext(Dispatchers.IO) {
+            user = userDao.getUserSync()
+        }
+        return user
+    }
+
     suspend fun login(email: String, password: String) {
         withContext(Dispatchers.IO) {
             val user = User(email, password)

@@ -31,17 +31,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/task_priority_high"/>
+                android:text="@string/sort_by_title"/>
         <RadioButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/task_priority_normal"/>
+                android:text="@string/sort_by_priority"/>
         <RadioButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/task_priority_low"/>
+                android:text="@string/sort_by_deadline"/>
 
     </RadioGroup>
 

@@ -5,16 +5,15 @@ import com.mikeherasimov.doitapp.io.data.TaskRepository
 import com.mikeherasimov.doitapp.io.data.UserRepository
 import com.mikeherasimov.doitapp.io.db.Task
 import com.mikeherasimov.doitapp.ui.base.ScopedViewModel
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class MyTasksViewModel(
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val taskRepository: TaskRepository
 ) : ScopedViewModel() {
 
-    private val _isUserLoggedIn = MutableLiveData<Boolean>(true)
+    private val _isUserLoggedIn = MutableLiveData<Boolean>()
     val isUserLoggedIn: LiveData<Boolean>
         get() = _isUserLoggedIn
     private val _networkError = MutableLiveData<Boolean>(false)
@@ -24,12 +23,6 @@ class MyTasksViewModel(
     private var lastRequestedPage = 1
     private var isRequestInProgress = false
     private lateinit var lastSortingOrder: String
-
-    init {
-        userRepository.getUser().observeForever {
-            _isUserLoggedIn.value = it != null
-        }
-    }
 
     fun search(sortingOrder: String): LiveData<List<Task>> {
         lastRequestedPage = 1
@@ -67,11 +60,17 @@ class MyTasksViewModel(
         isRequestInProgress = true
         try {
             launch {
+                if (userRepository.getUserSync() == null) {
+                    _isUserLoggedIn.value = false
+                    return@launch
+                } else {
+                    _isUserLoggedIn.value = true
+                }
                 val tasksPage = taskRepository.getTasksFromApi(lastRequestedPage, sortingOrder)
                 taskRepository.saveTasksToCache(tasksPage.tasks)
                 lastRequestedPage++
             }
-        } catch (e: Exception) {
+        } catch (e: retrofit2.HttpException) {
             isRequestInProgress = false
             _networkError.value = true
         } finally {
@@ -86,13 +85,23 @@ class MyTasksViewModel(
         val order = sortingOrder.split(" ")[1]
         result = when (propertyToBeSorted) {
             "title" -> list.sortedBy { it.title }
-            "priority" -> list.sortedBy { it.priority }
+            "priority" -> list.sortedWith(Comparator(function = { t1: Task, t2: Task ->
+                map(t1.priority) - map(t2.priority)
+            }))
             else -> list.sortedBy { it.dueBy.toLong() }
         }
         if (order.equals("desc", true)) {
             result = result.reversed()
         }
         return result
+    }
+
+    private fun map(priority: String): Int {
+        return when (priority) {
+            "High" -> 1
+            "Normal" -> 2
+            else -> 3
+        }
     }
 
     class Factory(

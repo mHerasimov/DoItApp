@@ -29,7 +29,10 @@ class SortTasksDialog: DialogFragment() {
         builder.setTitle(R.string.dialog_title_sorting_order)
             .setView(contentView)
             .setPositiveButton(R.string.dialog_btn_sort) { _, _ ->
-                val sortBy = contentView.findViewById<RadioGroup>(R.id.rgSortBy).getSelectedRadioButtonTitle()
+                var sortBy = contentView.findViewById<RadioGroup>(R.id.rgSortBy).getSelectedRadioButtonTitle()
+                if (sortBy == "deadline") {
+                    sortBy = "dueBy"
+                }
                 val order = contentView.findViewById<RadioGroup>(R.id.rgOrder).getSelectedRadioButtonTitle()
                 listener.onSortingOrderPicked("$sortBy $order")
             }

@@ -18,7 +18,7 @@ class TaskRepository(
     suspend fun getTasksFromApi(page: Int, sort: String): TasksPage {
         var tasksPage: TasksPage? = null
         withContext(Dispatchers.IO) {
-            tasksPage = apiService.getTasksAsync(page, sort).await()
+            tasksPage = apiService.getTasksAsync(page, sort.toLowerCase()).await()
         }
         return tasksPage!!
     }

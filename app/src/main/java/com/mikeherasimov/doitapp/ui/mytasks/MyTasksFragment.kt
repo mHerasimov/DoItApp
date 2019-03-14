@@ -2,10 +2,8 @@ package com.mikeherasimov.doitapp.ui.mytasks
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
@@ -21,24 +19,28 @@ import com.mikeherasimov.doitapp.io.data.UserRepository
 import com.mikeherasimov.doitapp.ui.signin.SignInActivity
 import javax.inject.Inject
 
-class MyTasksFragment : Fragment() {
+class MyTasksFragment : Fragment(), SortTasksDialog.SortingOrderListener {
 
     @Inject
     lateinit var userRepository: UserRepository
     @Inject
     lateinit var taskRepository: TaskRepository
 
+    private lateinit var viewModel: MyTasksViewModel
+    private lateinit var tasksAdapter: MyTasksAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         App.component.inject(this)
+        setHasOptionsMenu(true)
 
-        val viewModel = setupViewModel()
-        val adapter = setupAdapter(viewModel)
+        viewModel = setupViewModel()
+        tasksAdapter = setupAdapter(viewModel)
         val binding = FragmentMyTasksBinding.inflate(inflater, container, false)
         binding.rvTasks.apply {
-            this.adapter = adapter
+            this.adapter = tasksAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             setupScrollListener(this, viewModel)
@@ -46,8 +48,31 @@ class MyTasksFragment : Fragment() {
         binding.fabClickListener = View.OnClickListener {
             NavHostFragment.findNavController(this).navigate(R.id.action_myTasksFragment_to_addEditTaskFragment)
         }
-        subscribeUi(viewModel, adapter)
+        subscribeUi(viewModel, tasksAdapter)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_my_tasks, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_sort -> {
+                val dialog = SortTasksDialog()
+                dialog.setTargetFragment(this, 1)
+                dialog.show(fragmentManager, "")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onSortingOrderPicked(sortOrder: String) {
+        viewModel.search(sortOrder).observe(this, Observer {
+            tasksAdapter.submitList(it)
+        })
     }
 
     private fun setupViewModel(): MyTasksViewModel {
