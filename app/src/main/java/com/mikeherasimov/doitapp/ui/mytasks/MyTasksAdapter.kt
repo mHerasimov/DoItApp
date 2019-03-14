@@ -12,8 +12,7 @@ class MyTasksAdapter: ListAdapter<Task, MyTasksAdapter.ViewHolder>(DiffCallback(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemTaskBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false)
-        )
+            LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

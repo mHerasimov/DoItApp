@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.core.view.get
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.fragment.app.DialogFragment
@@ -20,10 +19,6 @@ import com.mikeherasimov.doitapp.databinding.FragmentAddEditTaskBinding
 import com.mikeherasimov.doitapp.io.data.TaskRepository
 import com.mikeherasimov.doitapp.ui.addedittask.picker.DatePickerFragmentDialog
 import com.mikeherasimov.doitapp.ui.addedittask.picker.TimePickerFragmentDialog
-import com.mikeherasimov.doitapp.ui.util.eraseDate
-import com.mikeherasimov.doitapp.ui.util.eraseTime
-import kotlinx.android.synthetic.main.fragment_add_edit_task.view.*
-import java.util.*
 import javax.inject.Inject
 
 class AddEditTaskFragment : Fragment(),
@@ -63,7 +58,7 @@ class AddEditTaskFragment : Fragment(),
             }
         }
         binding.priorityCheckChangeListener = RadioGroup.OnCheckedChangeListener { radioGroup, i ->
-            val checkedRadioButton = radioGroup[i] as RadioButton
+            val checkedRadioButton = radioGroup.findViewById(i) as RadioButton
             viewModel.priority.set(checkedRadioButton.text.toString())
         }
         viewModel.onTaskSuccessfullyUpdatedOrCreated.addOnPropertyChangedCallback(

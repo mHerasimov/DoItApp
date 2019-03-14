@@ -22,6 +22,7 @@ class MyTasksViewModel(
 
     private var lastRequestedPage = 1
     private var isRequestInProgress = false
+    private lateinit var lastSortingOrder: String
 
     init {
         userRepository.getUser().observeForever {
@@ -31,6 +32,7 @@ class MyTasksViewModel(
 
     fun search(sortingOrder: String): LiveData<List<Task>> {
         lastRequestedPage = 1
+        lastSortingOrder = sortingOrder
         requestAndSaveData(sortingOrder)
         val tasks = taskRepository.getCachedTasks()
         return Transformations.map(tasks) { list ->
@@ -38,7 +40,13 @@ class MyTasksViewModel(
         }
     }
 
-    fun requestMore(sortingOrder: String) {
+    fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
+        if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
+            requestMore(lastSortingOrder)
+        }
+    }
+
+    private fun requestMore(sortingOrder: String) {
         requestAndSaveData(sortingOrder)
     }
 
@@ -50,8 +58,8 @@ class MyTasksViewModel(
         isRequestInProgress = true
         try {
             launch {
-                val tasks = taskRepository.getTasksFromApi(lastRequestedPage, sortingOrder)
-                taskRepository.saveTasksToCache(tasks)
+                val tasksPage = taskRepository.getTasksFromApi(lastRequestedPage, sortingOrder)
+                taskRepository.saveTasksToCache(tasksPage.tasks)
                 lastRequestedPage++
             }
         } catch (e: Exception) {
@@ -88,6 +96,10 @@ class MyTasksViewModel(
             return MyTasksViewModel(userRepository, taskRepository) as T
         }
 
+    }
+
+    companion object {
+        private const val VISIBLE_THRESHOLD = 5
     }
 
 }

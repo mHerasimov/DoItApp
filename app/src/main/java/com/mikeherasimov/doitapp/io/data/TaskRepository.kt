@@ -2,6 +2,7 @@ package com.mikeherasimov.doitapp.io.data
 
 import androidx.lifecycle.LiveData
 import com.mikeherasimov.doitapp.io.api.ApiService
+import com.mikeherasimov.doitapp.io.api.TasksPage
 import com.mikeherasimov.doitapp.io.db.Task
 import com.mikeherasimov.doitapp.io.db.TaskDao
 import kotlinx.coroutines.Dispatchers
@@ -14,12 +15,12 @@ class TaskRepository(
 
     fun getCachedTasks(): LiveData<List<Task>> = taskDao.getAllTasks()
 
-    suspend fun getTasksFromApi(page: Int, sort: String): List<Task> {
-        var tasks = emptyList<Task>()
+    suspend fun getTasksFromApi(page: Int, sort: String): TasksPage {
+        var tasksPage: TasksPage? = null
         withContext(Dispatchers.IO) {
-            tasks = apiService.getTasksAsync(page, sort).await()
+            tasksPage = apiService.getTasksAsync(page, sort).await()
         }
-        return tasks
+        return tasksPage!!
     }
 
     suspend fun createTask(title: String, dueBy: String, priority: String) {
@@ -35,7 +36,7 @@ class TaskRepository(
     suspend fun getTask(taskId: Int): Task {
         var task: Task? = null
         withContext(Dispatchers.IO) {
-            task = apiService.getTaskAsync(taskId).await()
+            task = apiService.getTaskAsync(taskId).await().getValue("task")
         }
         return task!!
     }
@@ -43,7 +44,7 @@ class TaskRepository(
     suspend fun updateTask(taskId: Int, title: String, dueBy: String, priority: String) {
         withContext(Dispatchers.IO) {
             val requestTask = Task(taskId.toString(), title, dueBy, priority)
-            val responseTask = apiService.updateTaskAsync(taskId, requestTask).await()
+            val responseTask = apiService.updateTaskAsync(taskId, requestTask).await().getValue("task")
             taskDao.update(responseTask)
         }
     }

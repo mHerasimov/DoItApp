@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.Observable
-import androidx.databinding.ObservableBoolean
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.mikeherasimov.doitapp.App
 import com.mikeherasimov.doitapp.R
 
@@ -33,19 +35,18 @@ class MyTasksFragment : Fragment() {
         App.component.inject(this)
 
         val viewModel = setupViewModel()
-        viewModel.isUserLoggedIn.addOnPropertyChangedCallback(object: Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                if (!(sender as ObservableBoolean).get()) {
-                    val intent = Intent(activity, SignInActivity::class.java)
-                    activity!!.startActivityForResult(intent, 1)
-                }
-            }
-        })
-
+        val adapter = setupAdapter()
         val binding = FragmentMyTasksBinding.inflate(inflater, container, false)
+        binding.rvTasks.apply {
+            this.adapter = adapter
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            setupScrollListener(this, viewModel)
+        }
         binding.fabClickListener = View.OnClickListener {
             NavHostFragment.findNavController(this).navigate(R.id.action_myTasksFragment_to_addEditTaskFragment)
         }
+        subscribeUi(viewModel, adapter)
         return binding.root
     }
 
@@ -54,6 +55,37 @@ class MyTasksFragment : Fragment() {
         return ViewModelProviders
             .of(this, factory)
             .get(MyTasksViewModel::class.java)
+    }
+
+    private fun setupAdapter(): MyTasksAdapter {
+        return MyTasksAdapter()
+    }
+
+    private fun subscribeUi(viewModel: MyTasksViewModel, adapter: MyTasksAdapter) {
+        viewModel.isUserLoggedIn.observe(this, Observer {
+            if (!it) {
+                val intent = Intent(context, SignInActivity::class.java)
+                activity!!.startActivityForResult(intent, 1)
+            }
+        })
+        // TODO observe network error here
+        viewModel.search("title asc").observe(this, Observer {
+            adapter.submitList(it)
+        })
+    }
+
+    private fun setupScrollListener(recycler: RecyclerView, viewModel: MyTasksViewModel) {
+        val layoutManager = recycler.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
+        recycler.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val visibleItemCount = layoutManager.childCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                viewModel.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
+            }
+        })
     }
 
 }
