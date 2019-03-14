@@ -5,6 +5,7 @@ import com.mikeherasimov.doitapp.io.data.TaskRepository
 import com.mikeherasimov.doitapp.io.data.UserRepository
 import com.mikeherasimov.doitapp.io.db.Task
 import com.mikeherasimov.doitapp.ui.base.ScopedViewModel
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -43,6 +44,14 @@ class MyTasksViewModel(
     fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
         if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
             requestMore(lastSortingOrder)
+        }
+    }
+
+    fun deleteTask(taskId: String) {
+        try {
+            launch { taskRepository.deleteTask(taskId.toInt()) }
+        } catch (e: Exception) {
+            _networkError.value = true
         }
     }
 

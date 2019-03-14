@@ -74,11 +74,13 @@
                             android:layout_weight="1"
                             android:text="@string/task_priority_high"/>
                     <RadioButton
+                            android:id="@+id/rbNormalPriority"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/task_priority_normal"/>
                     <RadioButton
+                            android:id="@+id/rbLowPriority"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"

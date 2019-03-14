@@ -43,15 +43,15 @@ class TaskRepository(
 
     suspend fun updateTask(taskId: Int, title: String, dueBy: String, priority: String) {
         withContext(Dispatchers.IO) {
-            val requestTask = Task(taskId.toString(), title, dueBy, priority)
-            val responseTask = apiService.updateTaskAsync(taskId, requestTask).await().getValue("task")
-            taskDao.update(responseTask)
+            val task = Task(taskId.toString(), title, dueBy, priority)
+            apiService.updateTaskAsync(taskId, task).await()
+            taskDao.update(task)
         }
     }
 
     suspend fun deleteTask(taskId: Int) {
         withContext(Dispatchers.IO) {
-            apiService.deleteTask(taskId)
+            apiService.deleteTaskAsync(taskId).await()
             taskDao.deleteTask(taskId)
         }
     }

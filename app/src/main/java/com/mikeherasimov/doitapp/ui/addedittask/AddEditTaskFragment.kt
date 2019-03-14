@@ -69,6 +69,7 @@ class AddEditTaskFragment : Fragment(),
                     }
                 }
             })
+        updateUi(binding.rgPriority)
         return binding.root
     }
 
@@ -84,7 +85,7 @@ class AddEditTaskFragment : Fragment(),
         val factory = AddEditTaskViewModel.Factory(
             taskRepository,
             getString(R.string.task_priority_high),
-            if (args.isInAddMode) 0 else args.taskId,
+            if (args.isInAddMode) 0 else args.task!!.id.toInt(),
             args.isInAddMode
         )
         return ViewModelProviders.of(this, factory)
@@ -94,6 +95,22 @@ class AddEditTaskFragment : Fragment(),
     private fun showPickerDialog(dialog: DialogFragment) {
         dialog.setTargetFragment(this, 1)
         dialog.show(fragmentManager!!, "")
+    }
+
+    private fun updateUi(priorityRadioGroup: RadioGroup) {
+        if (!args.isInAddMode) {
+            args.task!!.apply {
+                viewModel.title.set(title)
+                viewModel.priority.set(priority)
+                // TODO use custom binding adapter for 2 way data-binding
+                when(priority) {
+                    "Normal" -> priorityRadioGroup.check(R.id.rbNormalPriority)
+                    "Low" -> priorityRadioGroup.check(R.id.rbLowPriority)
+                    else -> {}
+                }
+                viewModel.deadlineTimestamp.set(dueBy.toLong())
+            }
+        }
     }
 
 }

@@ -32,7 +32,8 @@
               android:label="fragment_add_edit_task"
               tools:layout="@layout/fragment_add_edit_task">
         <argument android:name="isInAddMode" app:argType="boolean" android:defaultValue="true"/>
-        <argument android:name="taskId" app:argType="integer" android:defaultValue="0"/>
+        <argument android:name="task" app:argType="com.mikeherasimov.doitapp.io.db.Task" android:defaultValue="@null"
+                  app:nullable="true"/>
     </fragment>
 
 </navigation>

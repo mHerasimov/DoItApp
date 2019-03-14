@@ -43,7 +43,7 @@ class RepositoryModule {
     fun getOkHttpClient(userDao: UserDao): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(
-                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
+                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
             .addInterceptor { chain ->
                 addToken(chain, userDao.getUserSync()?.token ?: "")
             }

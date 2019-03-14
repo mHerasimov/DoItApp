@@ -31,6 +31,8 @@ class MyTasksAdapter(
         }
     }
 
+    fun getItemAt(pos: Int) = getItem(pos)
+
     class ViewHolder(
         private val binding: ItemTaskBinding
     ): RecyclerView.ViewHolder(binding.root) {

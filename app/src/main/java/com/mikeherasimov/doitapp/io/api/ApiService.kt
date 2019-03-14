@@ -23,9 +23,9 @@ interface ApiService {
     fun getTaskAsync(@Path("task") taskId: Int): Deferred<Map<String, Task>>
 
     @PUT("tasks/{task}")
-    fun updateTaskAsync(@Path("task") taskId: Int, @Body task: Task): Deferred<Map<String, Task>>
+    fun updateTaskAsync(@Path("task") taskId: Int, @Body task: Task): Deferred<List<Task>>
 
     @DELETE("tasks/{task}")
-    fun deleteTask(@Path("task") taskId: Int)
+    fun deleteTaskAsync(@Path("task") taskId: Int): Deferred<Unit>
 
 }

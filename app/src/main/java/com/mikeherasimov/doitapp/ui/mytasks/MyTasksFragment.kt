@@ -35,7 +35,7 @@ class MyTasksFragment : Fragment() {
         App.component.inject(this)
 
         val viewModel = setupViewModel()
-        val adapter = setupAdapter()
+        val adapter = setupAdapter(viewModel)
         val binding = FragmentMyTasksBinding.inflate(inflater, container, false)
         binding.rvTasks.apply {
             this.adapter = adapter
@@ -57,8 +57,21 @@ class MyTasksFragment : Fragment() {
             .get(MyTasksViewModel::class.java)
     }
 
-    private fun setupAdapter(): MyTasksAdapter {
-        return MyTasksAdapter()
+    private fun setupAdapter(viewModel: MyTasksViewModel): MyTasksAdapter {
+        var adapter: MyTasksAdapter? = null
+        val editClickListener: (Int) -> Unit = {
+            val action =
+                MyTasksFragmentDirections.actionMyTasksFragmentToAddEditTaskFragment(
+                    false,
+                    adapter!!.getItemAt(it)
+                )
+            NavHostFragment.findNavController(this).navigate(action)
+        }
+        val deleteClickListener: (Int) -> Unit = {
+            viewModel.deleteTask(adapter!!.getItemAt(it).id)
+        }
+        adapter = MyTasksAdapter(editClickListener, deleteClickListener)
+        return adapter
     }
 
     private fun subscribeUi(viewModel: MyTasksViewModel, adapter: MyTasksAdapter) {
