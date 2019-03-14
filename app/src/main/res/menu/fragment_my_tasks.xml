@@ -6,6 +6,12 @@
             android:id="@+id/action_sort"
             app:showAsAction="always"
             android:icon="@drawable/ic_sort"
-            android:title="@string/dialog_btn_sort" />
+            android:title="@string/action_sort" />
+
+    <item
+            android:id="@+id/action_logout"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/action_logout"/>
 
 </menu>

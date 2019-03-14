@@ -6,7 +6,6 @@ import com.mikeherasimov.doitapp.io.data.UserRepository
 import com.mikeherasimov.doitapp.io.db.Task
 import com.mikeherasimov.doitapp.ui.base.ScopedViewModel
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class MyTasksViewModel(
     private val userRepository: UserRepository,
@@ -20,6 +19,12 @@ class MyTasksViewModel(
     private var lastRequestedPage = 1
     private var isRequestInProgress = false
     private lateinit var lastSortingOrder: String
+
+    fun logout() {
+        launch {
+            userRepository.logout()
+        }
+    }
 
     fun search(sortingOrder: String): LiveData<List<Task>> {
         lastRequestedPage = 1

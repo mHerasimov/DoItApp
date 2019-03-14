@@ -41,4 +41,7 @@
     <string name="order_ascending">ASC</string>
     <string name="order_descending">DESC</string>
 
+    <string name="action_logout">Logout</string>
+    <string name="action_sort">Sort</string>
+
 </resources>

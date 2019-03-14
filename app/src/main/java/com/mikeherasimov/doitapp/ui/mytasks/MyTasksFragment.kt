@@ -66,6 +66,10 @@ class MyTasksFragment : Fragment(), SortTasksDialog.SortingOrderListener {
                 dialog.show(fragmentManager, "")
                 true
             }
+            R.id.action_logout -> {
+                viewModel.logout()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -103,8 +107,7 @@ class MyTasksFragment : Fragment(), SortTasksDialog.SortingOrderListener {
     private fun subscribeUi(viewModel: MyTasksViewModel, adapter: MyTasksAdapter) {
         viewModel.isUserLoggedIn.observe(this, Observer {
             if (!it) {
-                val intent = Intent(context, SignInActivity::class.java)
-                activity!!.startActivityForResult(intent, 1)
+                openSignInActivity()
             }
         })
         // TODO observe network error here
@@ -116,6 +119,11 @@ class MyTasksFragment : Fragment(), SortTasksDialog.SortingOrderListener {
                 showNoInternetToast(context!!)
             }
         })
+    }
+
+    private fun openSignInActivity() {
+        val intent = Intent(context, SignInActivity::class.java)
+        activity!!.startActivityForResult(intent, 1)
     }
 
     private fun setupScrollListener(recycler: RecyclerView, viewModel: MyTasksViewModel) {
